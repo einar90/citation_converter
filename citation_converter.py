@@ -28,7 +28,7 @@ ris_dictionary = {'SN':'isbn',
                   'PB':'publisher',
                   'TI':'title',
                   'AB':'abstract',
-                  'C1':'organization' # This is a custom field, translation may not alway 
+                  'C1':'organization',
                   'TY':'type'}
 
 csv_dictionary = {'Authors':'author',
@@ -50,6 +50,22 @@ class File:
         self.content = f.read()
         f.close()
 
+class Citation:
+    """Class that holds the parsed citation"""
+    def __init__(self, fileobj):
+        self.fileobj = fileobj
+        if self.fileobj.extension == 'csv':
+            self.parse_csv()
+        elif self.fileobj.extension == 'ris':
+            self.parse_ris()
+        else:
+            print 'Error: file extension not supported. Supported extensions are csv and ris.'
+    def parse_csv(self):
+        print 'Parsing csv.'
+    def parse_ris(self):
+        print 'Parsin ris.'
+    
+
 
 # Terminating if first parameter is missing
 if len(sys.argv) < 2:
@@ -58,6 +74,7 @@ if len(sys.argv) < 2:
 
 # Initiating file object and reading file contents
 file = File(str(sys.argv[1]))
+citation = Citation(file)
 
 
 
