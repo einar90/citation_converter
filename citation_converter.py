@@ -5,85 +5,38 @@ This tool har primarily been tested on citations exported from OnePetro.
 """
 
 import sys
-
-"""
-Currently missing "translations":
-    * ID/J2 -> Some sort of Document ID
-    * DATE/DA -> Exact publication date. Translate to year+month
-
-Issues: 
-    * 'C1':'organization'
-        This is a custom field, "translation" may not always be correct.
-"""
-
-ris_dictionary = {'SN':'isbn',
-                  'AU':'author',
-                  'A2':'author',
-                  'A3':'author',
-                  'A4':'author',
-                  'ET':'edition',
-                  'PY':'year',
-                  'UR':'url',
-                  'VL':'volume',
-                  'PB':'publisher',
-                  'TI':'title',
-                  'AB':'abstract',
-                  'C1':'organization',
-                  'TY':'type'}
-
-csv_dictionary = {'Authors':'author',
-                  'DOI':'doi',
-                  'Publisher':'publisher',
-                  'Society Code':'organization',
-                  'Title':'title'
-                  }
-
-
-
-class File:
-    """Class tha contains information about and the contents of the input file"""
-    def __init__(self, filename):
-        self.filename = filename
-        self.name = filename.split('.')[0]
-        self.extension = filename.split('.')[1]
-        f = open(self.filename, 'r')
-        self.content = f.read()
-        f.close()
-
-class Citation:
-    """Class that holds the parsed citation"""
-    def __init__(self, fileobj):
-        self.fileobj = fileobj
-        if self.fileobj.extension == 'csv':
-            self.parse_csv()
-        elif self.fileobj.extension == 'ris':
-            self.parse_ris()
-        else:
-            print 'Error: file extension not supported. Supported extensions are csv and ris.'
-    def parse_csv(self):
-        print 'Parsing csv.'
-    def parse_ris(self):
-        print 'Parsin ris.'
-    
-
+from input_file import Input_File
+from citation import Citation
+from printer import Printer
 
 # Terminating if first parameter is missing
 if len(sys.argv) < 2:
     print 'Error: Missing argument - Need name of input file as first argument.'
     sys.exit()
+elif len(sys.argv) == 2:
+    destination = 'console'
+elif len(sys.argv) == 3:
+    destination = sys.argv[2]
+elif len(sys.argv) < 3:
+    print 'Too many arguments.'
+    print 'Example calls:'
+    print 'python citation_converter.py inputfile.ris'
+    print 'python citation_converter.py inputfile.ris outputfile.bib'
 
 # Initiating file object and reading file contents
-file = File(str(sys.argv[1]))
-citation = Citation(file)
+input_file = Input_File(str(sys.argv[1]))
+citation = Citation(input_file)
+printer = Printer(citation, destination)
 
 
 
 
 
 # Debug printing
-print 'Number of arguments:', len(sys.argv), 'arguments.'
-print 'Argument List:', str(sys.argv)
-print 'Filename: ', file.filename
-print 'Name: ', file.name
-print 'Extension: ', file.extension
-print 'File content: ', file.content
+# print 'Number of arguments:', len(sys.argv), 'arguments.'
+# print 'Argument List:', str(sys.argv)
+# print 'Filename: ', input_file.filename
+# print 'Name: ', input_file.name
+# print 'Extension: ', input_file.extension
+# print 'File content: ', input_file.content
+# print 'Citation fields: ', citation.fields
